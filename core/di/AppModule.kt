@@ -1,0 +1,21 @@
+// core/di/AppModule.kt
+package com.trufitrack.core.di
+
+import com.trufitrack.data.repository.ConductorRepositoryImpl
+import com.trufitrack.domain.repository.ConductorRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class AppModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindConductorRepository(
+        impl: ConductorRepositoryImpl
+    ): ConductorRepository
+}
