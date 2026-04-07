@@ -1,10 +1,10 @@
 package com.trufitrack.domain.repository
 
-import com.trufitrack.data.remote.dto.ConductorDto
+import com.trufitrack.domain.model.Conductor
 
 interface AuthRepository {
-    suspend fun login(correo: String, contrasena: String): Result<ConductorDto?>
-    suspend fun register(conductor: ConductorDto): Result<Unit>
+    suspend fun login(correo: String, contrasena: String): Result<Conductor?>
+    suspend fun register(conductor: Conductor, contrasena: String): Result<Unit>
     suspend fun logout()
     fun isUserLoggedIn(): Boolean
 }

@@ -39,7 +39,8 @@ fun AppNavigation() {
                     navController.navigate(Routes.LOGIN) {
                         popUpTo(Routes.REGISTRO) { inclusive = true }
                     }
-                }
+                },
+                onVolver = { navController.popBackStack() }
             )
         }
         composable(Routes.MAPA) {

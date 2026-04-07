@@ -2,7 +2,7 @@ package com.trufitrack.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trufitrack.data.remote.dto.ConductorDto
+import com.trufitrack.domain.model.Conductor
 import com.trufitrack.domain.usecase.IsLoggedInUseCase
 import com.trufitrack.domain.usecase.LoginUseCase
 import com.trufitrack.domain.usecase.LogoutUseCase
@@ -24,8 +24,8 @@ class AuthViewModel @Inject constructor(
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState
 
-    private val _conductor = MutableStateFlow<ConductorDto?>(null)
-    val conductor: StateFlow<ConductorDto?> = _conductor
+    private val _conductor = MutableStateFlow<Conductor?>(null)
+    val conductor: StateFlow<Conductor?> = _conductor
 
     init {
         checkLoginStatus()
@@ -49,11 +49,12 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun register(conductor: ConductorDto) {
+    fun register(conductor: Conductor, contrasena: String) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
-            val result = registerUseCase(conductor)
-            _authState.value = if (result.isSuccess) AuthState.Success else AuthState.Error(result.exceptionOrNull()?.message ?: "Error")
+            val result = registerUseCase(conductor, contrasena)
+            _authState.value = if (result.isSuccess) AuthState.Success
+                               else AuthState.Error(result.exceptionOrNull()?.message ?: "Error")
         }
     }
 
