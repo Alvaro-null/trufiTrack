@@ -48,6 +48,9 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":data"))
     implementation(project(":domain"))
+
+    // Location services
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation(project(":presentation"))
 
     implementation(libs.androidx.core.ktx)

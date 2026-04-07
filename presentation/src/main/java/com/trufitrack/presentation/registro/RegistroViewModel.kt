@@ -2,8 +2,8 @@ package com.trufitrack.presentation.registro
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trufitrack.domain.model.Conductor
-import com.trufitrack.domain.usecase.RegistrarConductorUseCase
+import com.trufitrack.data.remote.dto.ConductorDto
+import com.trufitrack.domain.usecase.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +24,7 @@ data class RegistroUiState(
 
 @HiltViewModel
 class RegistroViewModel @Inject constructor(
-    private val registrarConductorUseCase: RegistrarConductorUseCase
+    private val registerUseCase: RegisterUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegistroUiState())
@@ -40,23 +40,24 @@ class RegistroViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
-            val conductor = Conductor(
-                nombreCompleto = _uiState.value.nombreCompleto,
-                celular        = _uiState.value.celular,
-                licencia       = _uiState.value.licencia,
-                correo         = _uiState.value.correo
+            val conductor = ConductorDto(
+                nombre_completo = _uiState.value.nombreCompleto,
+                celular = _uiState.value.celular,
+                licencia = _uiState.value.licencia,
+                correo = _uiState.value.correo,
+                contrasena = _uiState.value.contrasena
             )
 
-            val resultado = registrarConductorUseCase(conductor, _uiState.value.contrasena)
+            val result = registerUseCase(conductor)
 
-            resultado.fold(
-                onSuccess = {
-                    _uiState.value = _uiState.value.copy(isLoading = false, registroExitoso = true)
-                },
-                onFailure = { error ->
-                    _uiState.value = _uiState.value.copy(isLoading = false, error = error.message)
-                }
-            )
+            if (result.isSuccess) {
+                _uiState.value = _uiState.value.copy(isLoading = false, registroExitoso = true)
+            } else {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = result.exceptionOrNull()?.message ?: "Error desconocido"
+                )
+            }
         }
     }
 }
